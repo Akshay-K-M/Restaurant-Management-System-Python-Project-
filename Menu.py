@@ -41,9 +41,9 @@ class Menu:
         # Writing the initial menu to CSV
         with open('Menu.csv', 'w', newline='') as csv_file:
             writer = csv.writer(csv_file)
-            # Writing the header (fieldnames)
+            # Writing the header
             writer.writerow(["Item", "Price(Rs)"])
-            # Writing the rows (menu items)
+            # Writing the menu items
             for item, price in self.food_menu.items():
                 writer.writerow([item, price])
 
@@ -51,9 +51,9 @@ class Menu:
         # Writing the updated menu to CSV
         with open('Menu.csv', 'w', newline='') as csv_file:
             writer = csv.writer(csv_file)
-            writer.writerow(["Item", "Price"])  # Writing the header
+            writer.writerow(["Item", "Price"])
             for item, price in self.food_menu.items():
-                writer.writerow([item, price])  # Writing each item
+                writer.writerow([item, price])
 
     def display_menu(self):
         return self.food_menu
