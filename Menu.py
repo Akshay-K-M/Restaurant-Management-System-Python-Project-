@@ -1,5 +1,4 @@
 import csv
-
 class Menu:
     def __init__(self) -> None:
         self.food_menu = {
@@ -72,4 +71,6 @@ class Menu:
         self.csv_write()
 if __name__=="__main__":
     obj=Menu()
+    obj.add_update_menu("Pizza",30)
+    obj.remove_menu("Pizza")
     
