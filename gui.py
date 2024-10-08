@@ -1,7 +1,10 @@
 import tkinter 
 from tkinter import font
+
 class welcomewindow():
-    def __init__(self):
+    def __init__(self,runcustomer=None,runadmin=None):
+        self.runcustomer=runcustomer
+        self.runadmin=runadmin
         self.welcome=tkinter.Tk()
         self.welcome.title("Restaurant Management System (RMS)")
         self.welcome.geometry("1280x720")
@@ -20,39 +23,42 @@ class welcomewindow():
     
     def gotocustomer(self):
         self.welcome.destroy()
-        customer()
-    
-    def gotoadmin(self):
-        self.welcome.destroy()
-        admin()
-
-class customer():
-    def __init__(self):
         self.user=tkinter.Tk()
         self.user.title("Customer")
         self.user.geometry("1280x720")
         
-
-        self.gobackbutton=tkinter.Button(self.user,text="Go Back",font=("Helvetica", 40),command=self.goback)
+        self.gobackbutton=tkinter.Button(self.user,text="Go Back",font=("Helvetica", 40),command=self.goback1)
         self.gobackbutton.pack(side="top", anchor="nw", padx=25,pady=25)
+        if self.runcustomer:
+            self.runcustomer(self)
         self.user.mainloop()
-    def goback(self):
-        self.user.destroy()
-        welcomewindow()
+        
     
-
-class admin():
-    def __init__(self):
+        
+    def gotoadmin(self):
+        self.welcome.destroy()
         self.admin=tkinter.Tk()
         self.admin.title("Admin")
         self.admin.geometry("1280x720")
-        self.gobackbutton=tkinter.Button(self.admin,text="Go Back",font=("Helvetica", 40),command=self.goback)
+        self.gobackbutton=tkinter.Button(self.admin,text="Go Back",font=("Helvetica", 40),command=self.goback2)
         self.gobackbutton.pack(side="top", anchor="nw", padx=25,pady=25)
+        if self.runadmin:
+            self.runadmin(self)
         self.admin.mainloop()
-    def goback(self):
+
+    def goback1(self): # go back from customer
+        self.user.destroy()
+        welcomewindow(self.runcustomer,self.runadmin)
+    
+    def goback2(self): #go back from admin
         self.admin.destroy()
-        welcomewindow()
+        welcomewindow(self.runcustomer,self.runadmin)
+
 
 if __name__=="__main__":
-    welcomewindow()
-    
+    def customer():
+        print("User is in customer")
+
+    def admin():
+        print("User is in admin")
+    window=welcomewindow(runcustomer=customer,runadmin=admin)
