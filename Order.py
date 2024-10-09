@@ -47,14 +47,12 @@ class Display_Menu:
         confirm = input("Would you like to confirm the order? (y/n): ")
         if confirm.lower() == "y":
             print("Thank you for your order!")
-            # You might want to perform any finalization actions here
         else:
             print("Order has been canceled.")
             self.order.clear()  # Clear the order if not confirmed
             self.add_order()  # Optionally, allow reordering
 
         
-        total_amt=amt+amt*0.18
 if __name__=="__main__":
     obj1=Display_Menu()
     obj1.add_order()
