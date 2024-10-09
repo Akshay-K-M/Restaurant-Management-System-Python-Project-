@@ -55,7 +55,9 @@ class Menu:
                 writer.writerow([item, price])
 
     def display_menu(self):
-        return self.food_menu
+        print("{:<25} {:<10}".format('Food', 'Price (Rs)'))  # Adjusted formatting
+        for label, price in self.food_menu.items():
+            print("{:<25} {:<10}".format(label, price))
 
     def add_update_menu(self, food, price):
         self.food_menu[food] = price
@@ -71,6 +73,5 @@ class Menu:
         self.csv_write()
 if __name__=="__main__":
     obj=Menu()
-    obj.add_update_menu("Pizza",30)
-    obj.remove_menu("Pizza")
+    obj.display_menu()
     
