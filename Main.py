@@ -24,7 +24,7 @@ def customer(self):
     qtylabel.pack()
     qtyvar=tkinter.StringVar(inputframe)
     qtyvar.set("1")
-    qtydropdown=tkinter.OptionMenu(inputframe,qtyvar,"1","2","3","4","5","6","7","8","9","10")
+    qtydropdown=tkinter.OptionMenu(inputframe,qtyvar,"-1","1","2","3","4","5","6","7","8","9","10")
     qtydropdown.pack()
     labels=[]
     def displaydata():
@@ -52,11 +52,23 @@ def customer(self):
         qty=qtyvar.get()
         if item in obj.food_menu:
             qty=int(qty)
-            if item not in order.order:
+            if item not in order.order and qty>=1:
                 order.order[item]=qty
-            else:
+                displaydata()
+            elif item in order.order and (order.order[item]+qty)==0 :
+                order.order.pop(item)  
+                if order.order=={}:
+                    for label in labels:
+                        label.pack_forget()
+                    labels.clear()
+                else:
+                    displaydata()
+            elif len(order.order)!=0 and item in order.order and (order.order[item]+qty)>=0:
                 order.order[item]+=qty
-            displaydata()
+                displaydata()
+            else:
+                messagebox.showerror("ERROR","Invalid Quantity")
+            
         else:
             messagebox.showerror("ERROR"," Item Does Not Exist!")
 
