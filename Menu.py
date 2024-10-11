@@ -1,47 +1,16 @@
 import csv
 class Menu:
     def __init__(self) -> None:
-        self.food_menu = {
-            # Appetizers
-            "Garlic Bread": 29,  
-            "Mozzarella Sticks": 49,  
-            "Chicken Wings": 69,  
-            "Stuffed Mushrooms": 59,  
-
-            # Soups & Salads
-            "Tomato Soup": 29,  
-            "Caesar Salad": 49,  
-            "House Salad": 39,  
-
-            # Main Courses
-            "Cheeseburger": 99,  
-            "Grilled Chicken Sandwich": 89,  
-            "Spaghetti Bolognese": 109,  
-            "Grilled Salmon": 149,  
-            "BBQ Chicken Pizza": 129,  
-            "Vegan Stir-fry": 109,  
-
-            # Side Dishes
-            "French Fries": 39,  
-            "Onion Rings": 49,  
-            "Mashed Potatoes": 49,  
-
-            # Beverages
-            "Coca Cola": 19,  
-            "Iced Tea": 29,  
-            "Coffee": 39,  
-            "Lemonade": 29,  
-
-            # Desserts
-            "Chocolate Cake": 59,  
-            "Ice Cream": 39,  
-            "Apple Pie": 49}
-
+        self.food_menu={}
+        with open('Menu.csv','r') as csv_file:
+            reader=csv.reader(csv_file)
+            for i in reader:
+                self.food_menu[i[0]]=i[1]
         # Writing the initial menu to CSV
         with open('Menu.csv', 'w', newline='') as csv_file:
             writer = csv.writer(csv_file)
             # Writing the header
-            writer.writerow(["Item", "Price(Rs)"])
+
             # Writing the menu items
             for item, price in self.food_menu.items():
                 writer.writerow([item, price])

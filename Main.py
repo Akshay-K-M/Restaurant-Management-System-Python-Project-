@@ -3,7 +3,7 @@ import Menu
 import tkinter
 import Order
 import csv
-from tkinter import messagebox
+from tkinter import messagebox,simpledialog
 order=Order.Display_Menu()
 obj=Menu.Menu()
 def customer(self):
@@ -74,11 +74,14 @@ def customer(self):
             messagebox.showerror("ERROR"," Item Does Not Exist!")
 
     def placeorder():
-        order.confirm_order()
-        for label in labels:
-            label.pack_forget()
-        labels.clear()
-        messagebox.showinfo("Confirmed!","Your order has been placed!")
+        if len(order.order)!=0:
+            order.confirm_order()
+            for label in labels:
+                label.pack_forget()
+            labels.clear()
+            messagebox.showinfo("Confirmed!","Your order has been placed!")
+        else:
+            messagebox.showerror("Error!","Kindly add to cart!")
     
     addtoorderbutton=tkinter.Button(inputframe, text="Add to order",command=addtoorder)
     addtoorderbutton.pack()
@@ -176,8 +179,100 @@ def admin(self):
                             
         
     orderno.trace("w", on_orderno_change)
+#Admin
+    def goback3(): #go back from admin
+        self.change.destroy()
+        self.admin=tkinter.Tk()
+        self.admin.title("Admin")
+        self.admin.geometry("1280x720")
+        self.gobackbutton=tkinter.Button(self.admin,text="Go Back",font=("Helvetica", 40),command=self.goback2)
+        self.gobackbutton.pack(side="top", anchor="nw", padx=25,pady=25)
+        if self.runadmin:
+            self.runadmin(self)
+        self.admin.mainloop()
+
+    def change_menu(source="admin"):
+        self.change=tkinter.Tk()
+        self.change.title("Edit Menu")
+        self.change.geometry("1280x720")
+        self.gobackbutton=tkinter.Button(self.change,text="Go Back",font=("Helvetica", 40),command=goback3)
+        self.gobackbutton.pack(side="top", anchor="nw", padx=25,pady=25)
+        canvas=tkinter.Canvas(self.change)
+        scrollbar=tkinter.Scrollbar(self.change,orient="vertical",command=canvas.yview)
+        canvas.configure(yscrollcommand=scrollbar.set)
+        scrollbar.pack(side="right",fill="y")
+        canvas.pack(fill="both",expand=True)
+        container=tkinter.Frame(canvas)
+        canvas.create_window((0,0),window=container, anchor="nw")  
+        if source=="admin":
+            self.admin.destroy()
+        for i in obj.food_menu:
+            Label=(tkinter.Label(container, text=f"{i} {obj.food_menu[i]}",font=("Helvetica", max(10,40-(len(obj.food_menu)//2)))))
+            Label.pack()
+        def on_configure(event):
+            canvas.configure(scrollregion=canvas.bbox("all"))
+        container.bind("<Configure>",on_configure)
+        def add():
+        # Pop-up to get the item name
+            item_name = simpledialog.askstring("Input", "Enter the item name:", parent=self.change)
+            if item_name:
+                # Pop-up to get the item price
+                item_price = simpledialog.askstring("Input", "Enter the item price:", parent=self.change)
+                if item_price:
+                    # Add the item as a label in the container
+                    label = tkinter.Label(container, text=f"{item_name} {item_price}", font=("Helvetica", max(10,40-(len(obj.food_menu)//2))))
+                    label.pack()
+                    # Optionally save this data in a list or a file (CSV)
+                    with open('Menu.csv', 'a', newline='') as f:
+                        writer = csv.writer(f)
+                        writer.writerow([item_name, item_price])
+                        obj.food_menu[item_name]=item_price
+
+
+
+
+         # Function to remove an item (by Name)
+        def remove():
+            # Pop-up to get the name of the item to remove
+            item_name = simpledialog.askstring("Input", "Enter the name of the item to remove:", parent=self.change)
+            if item_name:
+                # Read the current items from the CSV
+                updated_items = []
+                item_found = False
+                with open('Menu.csv', 'r') as csv_file:
+                    reader = csv.reader(csv_file)
+                    for row in reader:
+                        if row[0] != item_name:
+                            updated_items.append(row)
+                        else:
+                            item_found = True
+                            obj.food_menu.pop(item_name)                    
+
+                # Write back the updated items to the CSV
+                with open('Menu.csv', 'w', newline='') as csv_file:
+                    writer = csv.writer(csv_file)
+                    writer.writerows(updated_items)
+                    
+                # Notify the user if the item was removed or not found
+                if item_found:
+                    messagebox.showinfo("Success", f"{item_name} has been removed from the menu.")
+                    self.change.destroy()
+                    change_menu(source="change_menu") 
+                else:
+                    messagebox.showwarning("Not Found", f"{item_name} was not found in the menu.")            
+     
+        addbutton=tkinter.Button(self.change, text="Add items to Menu",font=("Helvetica", 40),command=add)
+        addbutton.pack()
+        removebutton=tkinter.Button(self.change, text="Remove items from Menu",font=("Helvetica", 40),command=remove)
+        removebutton.pack()
+        self.change.mainloop()
+    self.changemenubutton=tkinter.Button(self.admin,text="Edit Menu",font=("Helvetica", 40),command=change_menu)
+    self.changemenubutton.pack(side="top", anchor="ne", padx=25,pady=25)
     
 
+        
+
+    
 
 
 
