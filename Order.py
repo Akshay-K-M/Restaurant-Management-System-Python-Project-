@@ -6,7 +6,13 @@ class Display_Menu:
         obj.display_menu()
         self.order={}
         self.ch="y"
-        self.orderid=1
+        self.orderid=1 #default value incase no orders
+        with open('Order.csv', 'r', newline='') as csv_file:
+            reader=csv.reader(csv_file)
+            count=0
+            for i in reader:
+                if len(i)==3: # to  find orderid of most recent order and add 1 to it for new orderid
+                    self.orderid=int((i[0].split())[-1])+1
     def add_order(self):
         count=0
         self.ch="y"
@@ -26,14 +32,14 @@ class Display_Menu:
                 
         self.confirm_order()
         
-    def confirm_order(self):
-        
+    def confirm_order(self): 
         with open('Order.csv', 'a', newline='') as csv_file:
             writer = csv.writer(csv_file)
             writer.writerow([f"Order ID: {self.orderid}","Item", "Quantity"])
             for item, quantity in self.order.items():
                 writer.writerow([item, quantity])
             self.orderid+=1
+            self.order.clear()
         #print("{:<15} {:<5} {:<10}".format('Food','Quantity','Price (Rs)'))  # Adjusted formatting
     def orderlist(self):
         with open('Menu.csv', 'r', newline='') as csv_file:
