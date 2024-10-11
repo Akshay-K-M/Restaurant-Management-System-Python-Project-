@@ -6,6 +6,7 @@ class Display_Menu:
         obj.display_menu()
         self.order={}
         self.ch="y"
+        self.orderid=1
     def add_order(self):
         count=0
         self.ch="y"
@@ -26,11 +27,13 @@ class Display_Menu:
         self.confirm_order()
         
     def confirm_order(self):
-        with open('Order.csv', 'w', newline='') as csv_file:
+        
+        with open('Order.csv', 'a', newline='') as csv_file:
             writer = csv.writer(csv_file)
-            writer.writerow(["Item", "Quantity"])
+            writer.writerow([f"Order ID: {self.orderid}","Item", "Quantity"])
             for item, quantity in self.order.items():
                 writer.writerow([item, quantity])
+            self.orderid+=1
         #print("{:<15} {:<5} {:<10}".format('Food','Quantity','Price (Rs)'))  # Adjusted formatting
     def orderlist(self):
         with open('Menu.csv', 'r', newline='') as csv_file:
