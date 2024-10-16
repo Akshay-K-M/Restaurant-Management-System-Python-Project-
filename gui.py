@@ -77,7 +77,8 @@ def customer(self):
 
     def placeorder():
         if len(order.order)!=0:
-            order.confirm_order()
+            customer_name=simpledialog.askstring("Input", "Enter your name", parent=self.user)
+            order.confirm_order(customer_name)
             for label in labels:
                 label.pack_forget()
             labels.clear()
@@ -96,8 +97,6 @@ def customer(self):
     def on_configure(event):
         canvas.configure(scrollregion=canvas.bbox("all"))
     container.bind("<Configure>",on_configure)
-
-
 # ADMINNN
 def admin(self):
     orderno=tkinter.StringVar(self.admin)
@@ -128,17 +127,15 @@ def admin(self):
             orderidtodelete=orderno.get()
             deletebutton.pack_forget()
             data=[]
-            found=False
             with open('Order.csv', 'r', newline='') as csv_file:
                 reader=csv.reader(csv_file)
                 for i in reader:
                     if len(i)==3:
                         if orderidtodelete!=(i[0].split())[-1]:
                             data.append(i)
-                            found=False
                         else:
-                            found=True
-                    if len(i)!=3 and found==False:
+                            data.append(i[0:2]+["Status = Complete"])
+                    if len(i)!=3:
                         data.append(i)
             with open('Order.csv','w',newline='') as csv_file:
                 writer=csv.writer(csv_file)
@@ -162,7 +159,7 @@ def admin(self):
                 if found==True:
                     if len(i)!=3: # adds items to list until order is complete
                         l.append(i)
-                        Label=tkinter.Label(self.admin,text=f"{i}",font=("Helvetica",40))
+                        Label=tkinter.Label(self.admin,text=f"{i}",font=("Helvetica",25))
                         Label.pack()
                         labels2.append(Label)
                     else: # breaks upon reaching next header
@@ -171,11 +168,14 @@ def admin(self):
                     if (i[0].split())[-1]==orderid:
                         found=True
                         l.append(i)
-                        Label=tkinter.Label(self.admin,text=f"{i}",font=("Helvetica",40))
+                        Label=tkinter.Label(self.admin,text=f"{i}",font=("Helvetica",25))
                         Label.pack()
+                        Label2=tkinter.Label(self.admin,text="Item, Quantity",font=("Helvetica",25))
+                        Label2.pack()
+                        labels2.append(Label2)
                         labels2.append(Label)
             if orderid!="Choose Order No" and orderid!="No Current Orders":
-                deletebutton=tkinter.Button(self.admin,text="Delete this order",command=deleteorder)
+                deletebutton=tkinter.Button(self.admin,text="Mark as complete",command=deleteorder)
                 deletebutton.pack()
                 labels2.append(deletebutton)
                             

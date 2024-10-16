@@ -24,7 +24,7 @@ class Menu:
                 writer.writerow([item, price])
 
     def display_menu(self):
-        print("{:<25} {:<10}".format('Food', 'Price (Rs)'))  # Adjusted formatting
+        print("{:<25} {:<10}".format('Food', 'Price'))  # Adjusted formatting
         for label, price in self.food_menu.items():
             print("{:<25} {:<10}".format(label, price))
 

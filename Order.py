@@ -12,32 +12,15 @@ class Display_Menu:
             count=0
             for i in reader:
                 if len(i)==3: # to  find orderid of most recent order and add 1 to it for new orderid
-                    self.orderid=int((i[0].split())[-1])+1
-    def add_order(self):
-        count=0
-        self.ch="y"
-        with open('Menu.csv', 'r', newline='') as csv_file:
-            reader = csv.reader(csv_file)
-            while self.ch.lower()=="y":
-                item=input("Enter item you want to buy: ")
-                for i in reader:
-                    if item in i[0]:
-                        count=1
-                        qty=int(input("Quantity: "))
-                        self.order[item]=qty
-                        self.ch=input("\n\nWould you like to order?(y/n): ")
-                        break 
-                if count!=1:                      
-                    print("Sorry! Item not available in Menu ")                        
-                
-        self.confirm_order()
+                    self.orderid=int((i[0].split())[-1])+1               
         
-    def confirm_order(self): 
+    def confirm_order(self,customer_name): 
         with open('Order.csv', 'a', newline='') as csv_file:
             writer = csv.writer(csv_file)
-            writer.writerow([f"Order ID: {self.orderid}","Item", "Quantity"])
+            writer.writerow([f"Order ID: {self.orderid}",f"Customer Name: {customer_name}","Status = Incomplete"])
+            
             for item, quantity in self.order.items():
-                writer.writerow([item, quantity])
+                writer.writerow([item,quantity])
             self.orderid+=1
             self.order.clear()
         #print("{:<15} {:<5} {:<10}".format('Food','Quantity','Price (Rs)'))  # Adjusted formatting
