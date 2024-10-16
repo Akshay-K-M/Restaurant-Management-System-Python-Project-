@@ -137,14 +137,11 @@ def admin(self):
                             data.append(i[0:2]+["Status = Complete"])
                     if len(i)!=3:
                         data.append(i)
-            with open('Order.csv','w',newline='') as csv_file:
-                writer=csv.writer(csv_file)
-                for i in data:
-                    writer.writerow(i)
-            orderno.set("Choose Order No")
-          
-
-
+                with open('Order.csv','w',newline='') as csv_file:
+                    writer=csv.writer(csv_file)
+                    for i in data:
+                        writer.writerow(i)
+                orderno.set("Choose Order No")
         for label in labels2:
             label.pack_forget()
         labels2.clear()
@@ -166,6 +163,7 @@ def admin(self):
                         break
                 if len(i)==3:
                     if (i[0].split())[-1]==orderid:
+                        status=i[-1]
                         found=True
                         l.append(i)
                         Label=tkinter.Label(self.admin,text=f"{i}",font=("Helvetica",25))
@@ -174,13 +172,13 @@ def admin(self):
                         Label2.pack()
                         labels2.append(Label2)
                         labels2.append(Label)
-            if orderid!="Choose Order No" and orderid!="No Current Orders":
+            
+            if orderid!="Choose Order No" and orderid!="No Current Orders" and status !="Status = Complete":
                 deletebutton=tkinter.Button(self.admin,text="Mark as complete",command=deleteorder)
                 deletebutton.pack()
-                labels2.append(deletebutton)
-                            
-        
+                labels2.append(deletebutton)                        
     orderno.trace("w", on_orderno_change)
+
 #Admin
     def goback3(): #go back from admin
         self.change.destroy()
