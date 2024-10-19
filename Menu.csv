@@ -1,13 +1,11 @@
 Item,Price(Rs)
-Garlic Bread,29
-Mozzarella Sticks,49
-Chicken Wings,69
+Mozzarella Sticks,20
+Chicken Wings,70
 Stuffed Mushrooms,59
-Tomato Soup,29
+Tomato Soup,40
 Caesar Salad,49
 House Salad,39
-Cheeseburger,99
-Grilled Chicken Sandwich,89
+Cheeseburger,50
 Spaghetti Bolognese,109
 Grilled Salmon,149
 BBQ Chicken Pizza,129
@@ -19,6 +17,8 @@ Coca Cola,19
 Iced Tea,29
 Coffee,39
 Lemonade,29
-Chocolate Cake,59
+Chocolate Cake,500
 Ice Cream,39
 Apple Pie,49
+Potato,50
+Melon,5

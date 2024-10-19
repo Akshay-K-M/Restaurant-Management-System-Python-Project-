@@ -6,5 +6,5 @@ import csv
 from tkinter import messagebox,simpledialog
 order=Order.Display_Menu()
 obj=Menu.Menu()    
-window=gui.welcomewindow(runcustomer=gui.customer,runadmin=gui.admin)
+window=gui.WelcomeWindow(runcustomer=gui.customer,runadmin=gui.admin)
 

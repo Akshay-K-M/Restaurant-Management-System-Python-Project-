@@ -3,7 +3,6 @@ import csv
 class Display_Menu:
     def __init__(self) -> None:
         obj=Menu.Menu()
-        obj.display_menu()
         self.order={}
         self.ch="y"
         self.orderid=1 #default value incase no orders
@@ -37,19 +36,6 @@ class Display_Menu:
                         amt += price * quantity
                         listofitems.append([item,quantity,price*quantity])
             return listofitems,amt    #print("{:<25} {:<10} {:<10}".format(item, quantity, price * quantity))
-        
-        print(f"Total Amount: {amt:.2f} Rs")
-        confirm = input("Would you like to confirm the order? (y/n): ")
-        if confirm.lower() == "y":
-            print("Thank you for your order!")
-            # You might want to perform any finalization actions here
-        else:
-            print("Order has been canceled.")
-            self.order.clear()  # Clear the order if not confirmed
-            self.add_order()  # Optionally, allow reordering
+      
+    
 
-        
-        #total_amt=amt+amt*0.18
-if __name__=="__main__":
-    obj1=Display_Menu()
-    obj1.add_order()
