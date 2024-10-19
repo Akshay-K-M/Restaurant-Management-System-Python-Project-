@@ -73,6 +73,7 @@ class WelcomeWindow():
         self.admin.mainloop()
 
     def goback1(self): # go back from customer
+        order.order={}
         self.user.destroy()
         WelcomeWindow(self.runcustomer,self.runadmin)
     
@@ -123,7 +124,7 @@ def customer(self):
         labels.append(Label2)
     
     def addtoorder():
-        item=itementry.get()
+        item=itementry.get().strip()
         qty=qtyvar.get()
         if item in obj.food_menu and item != "Item":
             qty=int(qty)
