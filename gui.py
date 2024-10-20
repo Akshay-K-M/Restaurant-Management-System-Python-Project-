@@ -190,6 +190,11 @@ def customer(self):
                 labels.clear()
             if (customer_name !=None) and len(customer_name) !=0:
                 messagebox.showinfo("Confirmed!","Your order has been placed! Please collect it from the counter!")
+            if (customer_name == None):
+                order.order={}
+                for label in labels: # Clear labels after order is placed
+                    label.pack_forget()
+                labels.clear()
         else:
             messagebox.showerror("Error!","Kindly add to cart!") # Error if no items in order
     
