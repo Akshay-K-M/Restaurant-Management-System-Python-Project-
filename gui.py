@@ -51,7 +51,7 @@ class WelcomeWindow():
         #self.canvas = tkinter.Canvas(self.user, bg="#282828")
         #self.canvas.pack(fill="both", expand=True)
 
-        self.gobackbutton=tkinter.Button(self.user,text="Go Back",font=("Cooper Black", 40),command=self.goback1, fg="#941b1b", bg="#282828")
+        self.gobackbutton=tkinter.Button(self.user,text="Go Back",font=("Cooper Black", 25),command=self.goback1, fg="#941b1b", bg="#282828")
         self.gobackbutton.pack(side="top", anchor="nw", padx=25,pady=25)
         #self.canvas.create_window(20, 20, anchor="nw", window=self.gobackbutton)
         if self.runcustomer:
@@ -66,13 +66,14 @@ class WelcomeWindow():
         self.admin.title("Admin")
         self.admin.geometry("1280x720")
         self.admin.configure(bg="#6e1414")
-        self.gobackbutton=tkinter.Button(self.admin,text="Go Back",font=("Arial Black", 40), fg="#941b1b", bg="#282828",command=self.goback2)
+        self.gobackbutton=tkinter.Button(self.admin,text="Go Back",font=("Arial Black", 25), fg="#941b1b", bg="#282828",command=self.goback2)
         self.gobackbutton.pack(side="top", anchor="nw", padx=25,pady=25)
         if self.runadmin:
             self.runadmin(self)
         self.admin.mainloop()
 
     def goback1(self): # go back from customer
+        order.order={}
         self.user.destroy()
         WelcomeWindow(self.runcustomer,self.runadmin)
     
@@ -91,7 +92,7 @@ def customer(self):
     canvas.create_window((0,0),window=container, anchor="nw")
 
     inputframe=tkinter.Frame(container)
-    inputframe.pack(side="right",anchor="ne",padx=10,pady=100)
+    inputframe.pack(side="right",anchor="ne",padx=100,pady=5)
     itemlabel=tkinter.Label(inputframe,text="Enter item name to order:",font=("Arial Black",30), bg = "#8B2252")
     itemlabel.pack()
     itementry=tkinter.Entry(inputframe,width=50)
@@ -108,22 +109,23 @@ def customer(self):
             label.pack_forget()
         labels.clear()
         data,totalamt=order.orderlist()
-        orderlabel=tkinter.Label(inputframe,text="Current Order:",font=("Arial Black",20))
+        orderlabel=tkinter.Label(inputframe,text="Current Order:",font=("Courier New",20))
         orderlabel.pack()
-        orderlabel2=tkinter.Label(inputframe,text="Item    Quantity    Price",font=("Arial Black",20))
+        orderlabel2=tkinter.Label(inputframe, text="{:<15} {:<8} {:<5}".format("  Item", "Quantity", "Price"), font=("Courier New", 20))
         orderlabel2.pack()
         labels.append(orderlabel)
         labels.append(orderlabel2)
-        for i in data:
-            Label=tkinter.Label(inputframe,text=f"{i[0]} {i[1]} {i[2]}" ,font=("Arial Black",20))
-            Label.pack()
-            labels.append(Label)
-        Label2=tkinter.Label(inputframe,text=f"Total Amount = {totalamt}", font=("Arial Black",20))
-        Label2.pack()
-        labels.append(Label2)
+        for item_name, quantity, price in data:
+            bill = tkinter.Label(inputframe, text="{:<15} {:<8} {:<6.2f}".format(item_name, quantity, price), font=("Courier New", 18))
+            bill.pack()
+            labels.append(bill)
+        # Display the total amount
+        total_amt = tkinter.Label(inputframe, text="Total Amount = {:.2f}".format(totalamt), font=("Courier New", 20))
+        total_amt.pack()
+        labels.append(total_amt)
     
     def addtoorder():
-        item=itementry.get()
+        item=itementry.get().strip()
         qty=qtyvar.get()
         if item in obj.food_menu and item != "Item":
             qty=int(qty)
@@ -170,13 +172,33 @@ def customer(self):
     addtoorderbutton.pack()
     placeorderbutton=tkinter.Button(inputframe, text="Place order",command=placeorder)
     placeorderbutton.pack()
-    for i in obj.food_menu:
-        Label=(tkinter.Label(container, text=f"{i} {obj.food_menu[i]}",font=("Arial Black", max(10,40-(len(obj.food_menu)//2)))))
-        Label.pack()
+    # Assuming obj.food_menu is a dictionary with item names as keys and prices as values
+    print("Food Menu:", obj.food_menu)
+    # Create header labels
+    # Define column widths
+    item_width = 20  # Width for item names
+    price_width = 10  # Width for prices
+
+    # Create header labels
+    header_label = tkinter.Label(container, text="{:<{}} {:<{}}".format(" Item Name", item_width,"Price", price_width), font=("Courier New", 20))
+    header_label.pack()
+
+    # Loop through the food menu and create labels
+    for item_name, item_price in obj.food_menu.items():
+        try:
+            item_price = float(item_price)  # Ensure item_price is a float
+            formatted_label = tkinter.Label(container, text="{:<{}}  {:<{}}".format(item_name, item_width, f"{item_price:.2f}", price_width), font=("Courier New", 18))
+            formatted_label.pack()
+        except ValueError:
+            pass
+       
     def on_configure(event):
         canvas.configure(scrollregion=canvas.bbox("all"))
     container.bind("<Configure>",on_configure)
-# ADMINNN
+
+
+# ADMIN
+
 def admin(self):
     orderno=tkinter.StringVar(self.admin)
     orderno.set("Choose Order No")
@@ -187,7 +209,7 @@ def admin(self):
         self.change.title("Edit Menu")
         self.change.geometry("1280x720")
         self.change.config(bg="#282828")
-        self.gobackbutton=tkinter.Button(self.change,text="Go Back",font=("Arial Black", 20),fg="#941b1b", bg="#282828", command=goback3)
+        self.gobackbutton=tkinter.Button(self.change,text="Go Back",font=("Arial Black", 25),fg="#941b1b", bg="#282828", command=goback3)
         self.gobackbutton.pack(side="top", anchor="nw", padx=25,pady=25)
         canvas=tkinter.Canvas(self.change)
         scrollbar=tkinter.Scrollbar(self.change,orient="vertical",command=canvas.yview)
@@ -198,9 +220,28 @@ def admin(self):
         canvas.create_window((0,0),window=container, anchor="nw")  
         if source=="admin":
             self.admin.destroy()
-        for i in obj.food_menu:
-            Label=(tkinter.Label(container, text=f"{i} {obj.food_menu[i]}",font=("Arial Black", max(10,40-(len(obj.food_menu)//2)))))
-            Label.pack()
+        row = 0  # Start at the first row for the header
+
+        # Create header labels
+        header_item = tkinter.Label(container, text="Item Name", font=("Arial Black", 15))
+        header_item.grid(row=row, column=0, padx=10, pady=10)
+
+        header_price = tkinter.Label(container, text="Price", font=("Arial Black", 15))
+        header_price.grid(row=row, column=1, padx=10, pady=10)
+
+        # Increment row for the item list
+        row += 1
+
+        # Populate the table with items
+        for item_name, item_price in obj.food_menu.items():
+            if item_name!="Item" and item_price!="Price(Rs)":
+                item_label = tkinter.Label(container, text=item_name, font=("Arial Black", 12))
+                item_label.grid(row=row, column=0, padx=10, pady=5)
+
+                price_label = tkinter.Label(container, text=item_price, font=("Arial Black", 12))
+                price_label.grid(row=row, column=1, padx=10, pady=5)
+
+            row += 1  # Move to the next row for the next
         def on_configure(event):
             canvas.configure(scrollregion=canvas.bbox("all"))
         container.bind("<Configure>",on_configure)
@@ -240,86 +281,103 @@ def admin(self):
                     add() 
          # Function to remove an item (by Name)
         def remove():
-            # Pop-up to get the name of the item to remove
-            item_name = simpledialog.askstring("Input", "Enter the name of the item to remove:", parent=self.change)
-            if item_name == "Item":
-                messagebox.showerror("ERROR","Invalid Input")
-            if item_name and item_name != "Item":
-                # Read the current items from the CSV
-                updated_items = []
-                item_found = False
-                with open('Menu.csv', 'r') as csv_file:
-                    reader = csv.reader(csv_file)
-                    for row in reader:
-                        print(row[0] + item_name)
-                        if row[0] != item_name:
-                            updated_items.append(row)
-                        else:
-                            item_found = True
-                            obj.food_menu.pop(item_name) 
-                                           
+            try:
+                # Pop-up to get the name of the item to remove
+                item_name = simpledialog.askstring("Input", "Enter the name of the item to remove:", parent=self.change)
+                if item_name == "Item":
+                    messagebox.showerror("ERROR","Invalid Input")
+                if item_name and item_name != "Item":
+                    # Read the current items from the CSV
+                    updated_items = []
+                    item_found = False
 
-                # Write back the updated items to the CSV
-                with open('Menu.csv', 'w', newline='') as csv_file:
-                    writer = csv.writer(csv_file)
-                    writer.writerows(updated_items)
-                    
-                # Notify the user if the item was removed or not found
-                if item_found:
-                    messagebox.showinfo("Success", f"{item_name} has been removed from the menu.")
-                    self.change.destroy()
-                    change_menu(source="change_menu") 
-                else:
-                    messagebox.showwarning("Not Found", f"{item_name} was not found in the menu.")            
+                    with open('Menu.csv', 'r') as csv_file:
+                        reader = csv.reader(csv_file)
+                        for row in reader:
+                            print(row[0] + item_name)
+                            if row[0] != item_name:
+                                updated_items.append(row)
+                            else:
+                                item_found = True
+                                obj.food_menu.pop(item_name) 
+
+
+                    # Write back the updated items to the CSV
+                    with open('Menu.csv', 'w', newline='') as csv_file:
+                        writer = csv.writer(csv_file)
+                        writer.writerows(updated_items)
+
+                    # Notify the user if the item was removed or not found
+                    if item_found:
+                        messagebox.showinfo("Success", f"{item_name} has been removed from the menu.")
+                        self.change.destroy()
+                        change_menu(source="change_menu") 
+                    else:
+                        messagebox.showwarning("Not Found", f"{item_name} was not found in the menu.")   
+            except FileNotFoundError:
+                print("Error: 'Order.csv' file not found. Starting with order ID 1.")
+            except Exception as e:
+                 print(f"Error reading 'Order.csv': {e}")         
      
-        addbutton=tkinter.Button(self.change, text="Add item to Menu",font=("Arial Black", 40),command=add)
+        addbutton=tkinter.Button(self.change, text="Add item to Menu",font=("Arial Black", 25),command=add,bg="orange")
         addbutton.pack()
-        removebutton=tkinter.Button(self.change, text="Remove item from Menu",font=("Arial Black", 40),command=remove)
+        removebutton=tkinter.Button(self.change, text="Remove item from Menu",font=("Arial Black", 25),command=remove,bg="orange")
         removebutton.pack()
         self.change.mainloop()
-    self.changemenubutton=tkinter.Button(self.admin,text="Edit Menu",font=("Arial Black", 40),command=change_menu)
-    self.changemenubutton.pack( anchor="ne", padx=25,pady=25)
+    self.changemenubutton=tkinter.Button(self.admin,text="Edit Menu",font=("Arial Black", 25),command=change_menu)
+    self.changemenubutton.pack(anchor="ne", padx=25,pady=25)
     def dropdowndisplay():
-        ordernos.clear()
-        with open('Order.csv', 'r', newline='') as csv_file:
-            reader=csv.reader(csv_file)
-            for i in reader:
-                if len(i)==3:
-                    ordernos.append((i[0].split())[-1]) # taking orderid string i[0], and splitting so last part becomes orderid (-1)
-        if len(ordernos)!=0:
-            orderdropdown=tkinter.OptionMenu(self.admin,orderno,*ordernos) # * unpacks the list, if 4 order it would just show one option 1 2 3 4 otherwise.
-            orderdropdown.pack()
-            labels2.append(orderdropdown)
-        if len(ordernos)==0:
-            orderdropdown=tkinter.OptionMenu(self.admin,orderno,"No Current Orders") # * unpacks the list, if 4 order it would just show one option 1 2 3 4 otherwise.
-            order.orderid=1
-            orderdropdown.pack()
-            labels2.append(orderdropdown)
+        try:
+            ordernos.clear()
+            with open('Order.csv', 'r', newline='') as csv_file:
+                reader=csv.reader(csv_file)
+                for i in reader:
+                    if len(i)==3:
+                        ordernos.append((i[0].split())[-1]) # taking orderid string i[0], and splitting so last part becomes orderid (-1)
+            if len(ordernos)!=0:
+                orderdropdown=tkinter.OptionMenu(self.admin,orderno,*ordernos) # * unpacks the list, if 4 order it would just show one option 1 2 3 4 otherwise.
+                orderdropdown.config(width=20,font=("Arial", 15))
+                orderdropdown.pack()
+                labels2.append(orderdropdown)
+            if len(ordernos)==0:
+                orderdropdown=tkinter.OptionMenu(self.admin,orderno,"No Current Orders") # * unpacks the list, if 4 order it would just show one option 1 2 3 4 otherwise.
+                orderdropdown.config(width=20,font=("Arial", 15))
+                order.orderid=1
+                orderdropdown.pack()
+                labels2.append(orderdropdown)
+        except FileNotFoundError:
+            print("Error: 'Order.csv' file not found. Starting with order ID 1.")
+        except Exception as e:
+            print(f"Error reading 'Order.csv': {e}")
     dropdowndisplay()
  
 
     def on_orderno_change(*args):
         def mark_order_as_complete():
-            orderidtodelete=orderno.get()
-            deletebutton.pack_forget()
-            data=[]
-            with open('Order.csv', 'r', newline='') as csv_file:
-                reader=csv.reader(csv_file)
-                for i in reader:
-                    if len(i)==3:
-                        if orderidtodelete!=(i[0].split())[-1]:
+            try:
+                orderidtodelete=orderno.get()
+                deletebutton.pack_forget()
+                data=[]
+                with open('Order.csv', 'r', newline='') as csv_file:
+                    reader=csv.reader(csv_file)
+                    for i in reader:
+                        if len(i)==3:
+                            if orderidtodelete!=(i[0].split())[-1]:
+                                data.append(i)
+                            else:
+                                data.append(i[0:2]+["Status = Complete"])
+                        if len(i)!=3:
                             data.append(i)
-                        else:
-                            data.append(i[0:2]+["Status = Complete"])
-                    if len(i)!=3:
-                        data.append(i)
-            with open('Order.csv','w',newline='') as csv_file:
-                writer=csv.writer(csv_file)
-                for i in data:
-                    writer.writerow(i)
-            orderno.set("Choose Order No")
-            messagebox.showinfo("Success!","Order has been marked as complete!")
-          
+                with open('Order.csv','w',newline='') as csv_file:
+                    writer=csv.writer(csv_file)
+                    for i in data:
+                        writer.writerow(i)
+                orderno.set("Choose Order No")
+                messagebox.showinfo("Success!","Order has been marked as complete!")
+            except FileNotFoundError:
+                print("Error: 'Order.csv' file not found. Starting with order ID 1.")
+            except Exception as e:
+                print(f"Error reading 'Order.csv': {e}")
 
 
         for label in labels2:
@@ -329,31 +387,35 @@ def admin(self):
 
         orderid=orderno.get()
         found=False
-        with open('Order.csv', 'r', newline='') as csv_file:
-            reader=csv.reader(csv_file)
-            for i in reader:
-                if found==True:
-                    if len(i)!=3: # adds items to list until order is complete
-                        Label=tkinter.Label(self.admin,text=f"{i[0]} {i[1]}",font=("Arial Black",25))
-                        Label.pack()
-                        labels2.append(Label)
-                    else: # breaks upon reaching next header
-                        break
-                if len(i)==3:
-                    if (i[0].split())[-1]==orderid:
-                        found=True
-                        status=i[-1]
-                        Label=tkinter.Label(self.admin,text=f"{i[0]}  {i[1]}  {i[2]}" ,font=("Arial Black",25))
-                        Label.pack()
-                        Label2=tkinter.Label(self.admin,text="Item, Quantity",font=("Arial Black",25))
-                        Label2.pack()
-                        labels2.append(Label2)
-                        labels2.append(Label)
-            if orderid!="Choose Order No" and orderid!="No Current Orders" and status !="Status = Complete":
-                deletebutton=tkinter.Button(self.admin,text="Mark as complete",command=mark_order_as_complete)
-                deletebutton.pack()
-                labels2.append(deletebutton)
-                            
+        try:
+            with open('Order.csv', 'r', newline='') as csv_file:
+                reader=csv.reader(csv_file)
+                for i in reader:
+                    if found==True:
+                        if len(i)!=3: # adds items to list until order is complete
+                            Label=tkinter.Label(self.admin,text=f"{i[0]} {i[1]}",font=("Arial Black",25))
+                            Label.pack()
+                            labels2.append(Label)
+                        else: # breaks upon reaching next header
+                            break
+                    if len(i)==3:
+                        if (i[0].split())[-1]==orderid:
+                            found=True
+                            status=i[-1]
+                            Label=tkinter.Label(self.admin,text=f"{i[0]}  {i[1]}  {i[2]}" ,font=("Arial Black",25))
+                            Label.pack()
+                            Label2=tkinter.Label(self.admin,text="Item, Quantity",font=("Arial Black",25))
+                            Label2.pack()
+                            labels2.append(Label2)
+                            labels2.append(Label)
+                if orderid!="Choose Order No" and orderid!="No Current Orders" and status !="Status = Complete":
+                    deletebutton=tkinter.Button(self.admin,text="Mark as complete",command=mark_order_as_complete)
+                    deletebutton.pack()
+                    labels2.append(deletebutton)
+        except FileNotFoundError:
+            print("Error: 'Order.csv' file not found. Starting with order ID 1.")
+        except Exception as e:
+            print(f"Error reading 'Order.csv': {e}")                    
     orderno.trace("w", on_orderno_change)
 #Admin
     def goback3(): #go back from admin
@@ -362,7 +424,7 @@ def admin(self):
         self.admin.title("Admin")
         self.admin.geometry("1280x720")
         self.admin.configure(bg="#6e1414")
-        self.gobackbutton=tkinter.Button(self.admin,text="Go Back",font=("Arial Black", 40), fg="#941b1b", bg="#282828",command=self.goback2)
+        self.gobackbutton=tkinter.Button(self.admin,text="Go Back",font=("Arial Black", 25), fg="#941b1b", bg="#282828",command=self.goback2)
         self.gobackbutton.pack( anchor="nw", padx=25,pady=25)
         if self.runadmin:
             self.runadmin(self)

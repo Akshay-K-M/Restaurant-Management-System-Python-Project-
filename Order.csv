@@ -1,5 +1,4 @@
-Order ID: 1,Customer Name: Raj,Status = Incomplete
+Order ID: 1,Customer Name: Raj,Status = Complete
 Chicken Wings,2
-Order ID: 2,Customer Name: Anish Biryani,Status = Incomplete
-Item,25
-Chicken Wings,2
+Order ID: 2,Customer Name: Vishudha,Status = Complete
+Tomato Soup,1
