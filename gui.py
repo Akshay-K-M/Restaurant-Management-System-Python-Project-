@@ -173,7 +173,6 @@ def customer(self):
     placeorderbutton=tkinter.Button(inputframe, text="Place order",command=placeorder)
     placeorderbutton.pack()
     # Assuming obj.food_menu is a dictionary with item names as keys and prices as values
-    print("Food Menu:", obj.food_menu)
     # Create header labels
     # Define column widths
     item_width = 20  # Width for item names
