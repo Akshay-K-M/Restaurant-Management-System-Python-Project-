@@ -6,6 +6,7 @@ import Menu
 import Order
 import csv
 
+#Initialize order and menu objects
 order=Order.Display_Menu()
 obj=Menu.Menu()
 
@@ -13,8 +14,10 @@ obj=Menu.Menu()
     
 class WelcomeWindow():
     def __init__(self, runcustomer=None, runadmin=None):
+        # Initialize customer and admin run functions
         self.runcustomer = runcustomer
         self.runadmin = runadmin
+        # Set up the main welcome window
         self.welcome = tkinter.Tk()
         self.welcome.title("Restaurant Management System (RMS)")
         self.welcome.geometry("1280x720")
@@ -24,19 +27,25 @@ class WelcomeWindow():
         self.background_image = self.background_image.resize((1280, 720))  # Resize to fit the window
         self.background_photo = ImageTk.PhotoImage(self.background_image)
 
+        # Create a canvas for the welcome window
         self.canvas = tkinter.Canvas(self.welcome, width=1280, height=720)
         self.canvas.pack(fill="both", expand=True)
         self.canvas.create_image(0, 0, image=self.background_photo, anchor="nw")
 
+
+        # Welcome message
         self.label = tkinter.Label(self.welcome, text="Welcome To Flavourful!", font=("Brush Script Mt", 60), bg="#B22222", fg="black")
         self.canvas.create_window(640, 250, window=self.label)  
 
+        # Button to place order
         self.customerbutton = tkinter.Button(self.welcome, text="Place Order", font=("Arial Black", 30), bg="#FF7D40", fg="black", command=self.gotocustomer)
         self.canvas.create_window(600, 400, window=self.customerbutton)  
 
+        # Button to manage menu
         self.adminbutton = tkinter.Button(self.welcome, text="Manage Menu", font=("Arial Black", 30),  bg="#FF7D40", fg="black", command=self.gotoadmin)
         self.canvas.create_window(600, 500, window=self.adminbutton)  # Centered in the canvas
 
+        # Start the Tkinter main loop   
         self.welcome.mainloop()
 
     
@@ -51,23 +60,30 @@ class WelcomeWindow():
         #self.canvas = tkinter.Canvas(self.user, bg="#282828")
         #self.canvas.pack(fill="both", expand=True)
 
+        # Go back button for the customer interface
         self.gobackbutton=tkinter.Button(self.user,text="Go Back",font=("Cooper Black", 25),command=self.goback1, fg="#941b1b", bg="#282828")
         self.gobackbutton.pack(side="top", anchor="nw", padx=25,pady=25)
         #self.canvas.create_window(20, 20, anchor="nw", window=self.gobackbutton)
+        # Call the customer function if provided
         if self.runcustomer:
             self.runcustomer(self)
+        # Start the customer interface main loop
         self.user.mainloop()
         
     
         
     def gotoadmin(self):
+
+        # Switch to the admin
         self.welcome.destroy()
         self.admin=tkinter.Tk()
         self.admin.title("Admin")
         self.admin.geometry("1280x720")
         self.admin.configure(bg="#6e1414")
+        # Go back button for the admin interface
         self.gobackbutton=tkinter.Button(self.admin,text="Go Back",font=("Arial Black", 25), fg="#941b1b", bg="#282828",command=self.goback2)
         self.gobackbutton.pack(side="top", anchor="nw", padx=25,pady=25)
+        # Call the admin function if provided
         if self.runadmin:
             self.runadmin(self)
         self.admin.mainloop()
@@ -75,14 +91,15 @@ class WelcomeWindow():
     def goback1(self): # go back from customer
         order.order={}
         self.user.destroy()
-        WelcomeWindow(self.runcustomer,self.runadmin)
+        WelcomeWindow(self.runcustomer,self.runadmin) 
     
     def goback2(self): #go back from admin
         self.admin.destroy()
-        WelcomeWindow(self.runcustomer,self.runadmin)
+        WelcomeWindow(self.runcustomer,self.runadmin) # Return to the welcome window
 
 
 def customer(self):
+    # Create a scrollable frame for customer order input
     canvas=tkinter.Canvas(self.user)
     scrollbar=tkinter.Scrollbar(self.user,orient="vertical",command=canvas.yview)
     canvas.configure(yscrollcommand=scrollbar.set)
@@ -91,23 +108,28 @@ def customer(self):
     container=tkinter.Frame(canvas)
     canvas.create_window((0,0),window=container, anchor="nw")
 
+    # Frame for input fields
     inputframe=tkinter.Frame(container)
     inputframe.pack(side="right",anchor="ne",padx=100,pady=5)
+    # Input for item name
     itemlabel=tkinter.Label(inputframe,text="Enter item name to order:",font=("Arial Black",30), bg = "#8B2252")
     itemlabel.pack()
     itementry=tkinter.Entry(inputframe,width=50)
     itementry.pack()
+    # Dropdown for quantity
     qtylabel=tkinter.Label(inputframe,text="Select Quantity",font=("Arial Black",30))
     qtylabel.pack()
     qtyvar=tkinter.StringVar(inputframe)
     qtyvar.set("1")
     qtydropdown=tkinter.OptionMenu(inputframe,qtyvar,"-1","1","2","3","4","5","6","7","8","9","10")
     qtydropdown.pack()
-    labels=[]
+    labels=[] # List to hold labels
     def displaydata():
+        # Clear previous labels displaying updated order
         for label in labels:
             label.pack_forget()
         labels.clear()
+        # Retrieve and display current order details
         data,totalamt=order.orderlist()
         orderlabel=tkinter.Label(inputframe,text="Current Order:",font=("Courier New",20))
         orderlabel.pack()
@@ -115,6 +137,7 @@ def customer(self):
         orderlabel2.pack()
         labels.append(orderlabel)
         labels.append(orderlabel2)
+        # Loop through the order date to create labels
         for item_name, quantity, price in data:
             bill = tkinter.Label(inputframe, text="{:<15} {:<8} {:<6.2f}".format(item_name, quantity, price), font=("Courier New", 18))
             bill.pack()
@@ -125,49 +148,52 @@ def customer(self):
         labels.append(total_amt)
     
     def addtoorder():
-        item=itementry.get().strip()
+        # Add an item to the current order
+        item=itementry.get().strip() #Get item name from entry
         qty=qtyvar.get()
-        if item in obj.food_menu and item != "Item":
+        if item in obj.food_menu and item != "Item": # Check if the item is valid
             qty=int(qty)
-            if item not in order.order and qty>=1:
+            if item not in order.order and qty>=1: # New item 
                 order.order[item]=qty
                 displaydata()
-            elif item in order.order and (order.order[item]+qty)==0 :
+            elif item in order.order and (order.order[item]+qty)==0 : # Remove item if quantity is Zero
                 order.order.pop(item)  
-                if order.order=={}:
+                if order.order=={}: #Clear labels if no items left
                     for label in labels:
                         label.pack_forget()
                     labels.clear()
                 else:
-                    displaydata()
+                    displaydata() # Refresh display
             elif len(order.order)!=0 and item in order.order and (order.order[item]+qty)>=0:
-                order.order[item]+=qty
+                order.order[item]+=qty # Update Quantity
                 displaydata()
             else:
-                messagebox.showerror("ERROR","Invalid Quantity")
+                messagebox.showerror("ERROR","Invalid Quantity") # Error for invalid quantity
             
         else:
-            messagebox.showerror("ERROR"," Invalid Item!")
+            messagebox.showerror("ERROR"," Invalid Item!") # Error for invalid item
 
     def placeorder():
+        # Place the order and confirm with customer
         if len(order.order)!=0:
             customer_name=simpledialog.askstring("Input", "Enter your name", parent=self.user)
 
 
             if (customer_name != None) and len(customer_name) == 0:
                 messagebox.showerror("ERROR","Please enter your name")
-                placeorder()
-            if (customer_name != None) and len(customer_name) != 0:
+                placeorder() # Retry if name is empty   
+            if (customer_name != None) and len(customer_name) != 0: # Confirm the order 
                 order.confirm_order(customer_name)
             if customer_name != None:
-                for label in labels:
+                for label in labels: # Clear labels after order is placed
                     label.pack_forget()
                 labels.clear()
             if (customer_name !=None) and len(customer_name) !=0:
                 messagebox.showinfo("Confirmed!","Your order has been placed! Please collect it from the counter!")
         else:
-            messagebox.showerror("Error!","Kindly add to cart!")
+            messagebox.showerror("Error!","Kindly add to cart!") # Error if no items in order
     
+    #  Buttons for adding order and placing order
     addtoorderbutton=tkinter.Button(inputframe, text="Add to order",command=addtoorder)
     addtoorderbutton.pack()
     placeorderbutton=tkinter.Button(inputframe, text="Place order",command=placeorder)
@@ -230,7 +256,7 @@ def admin(self):
         # Increment row for the item list
         row += 1
 
-        # Populate the table with items
+        # Fill the table with items
         for item_name, item_price in obj.food_menu.items():
             if item_name!="Item" and item_price!="Price(Rs)":
                 item_label = tkinter.Label(container, text=item_name, font=("Arial Black", 12))
@@ -273,11 +299,11 @@ def admin(self):
                     messagebox.showerror("ERROR","Enter item name!")  
                 elif item_name in obj.food_menu:
                     messagebox.showerror("ERROR","Item already exists on the menu!")
-                elif item_name.isnumeric():
+                elif type(item_name)== str and item_name.isnumeric():
                     messagebox.showerror("ERROR","Enter valid item name!")  
                 if item_name != None: #makes sure user didnt cancel, only then calls add
                     add() 
-         # Function to remove an item (by Name)
+         # Function to remove an item
         def remove():
             try:
                 # Pop-up to get the name of the item to remove
@@ -331,14 +357,14 @@ def admin(self):
                 reader=csv.reader(csv_file)
                 for i in reader:
                     if len(i)==3:
-                        ordernos.append((i[0].split())[-1]) # taking orderid string i[0], and splitting so last part becomes orderid (-1)
+                        ordernos.append((i[0].split())[-1]) # taking order id string i[0], and splitting so last part becomes orderid (-1)
             if len(ordernos)!=0:
                 orderdropdown=tkinter.OptionMenu(self.admin,orderno,*ordernos) # * unpacks the list, if 4 order it would just show one option 1 2 3 4 otherwise.
                 orderdropdown.config(width=20,font=("Arial", 15))
                 orderdropdown.pack()
                 labels2.append(orderdropdown)
             if len(ordernos)==0:
-                orderdropdown=tkinter.OptionMenu(self.admin,orderno,"No Current Orders") # * unpacks the list, if 4 order it would just show one option 1 2 3 4 otherwise.
+                orderdropdown=tkinter.OptionMenu(self.admin,orderno,"No Current Orders") 
                 orderdropdown.config(width=20,font=("Arial", 15))
                 order.orderid=1
                 orderdropdown.pack()
@@ -351,7 +377,7 @@ def admin(self):
  
 
     def on_orderno_change(*args):
-        def mark_order_as_complete():
+        def mark_order_as_complete(): # Fucntion to mark status of order as complete
             try:
                 orderidtodelete=orderno.get()
                 deletebutton.pack_forget()
