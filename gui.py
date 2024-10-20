@@ -73,7 +73,6 @@ class WelcomeWindow():
         self.admin.mainloop()
 
     def goback1(self): # go back from customer
-        order.order={}
         self.user.destroy()
         WelcomeWindow(self.runcustomer,self.runadmin)
     
@@ -124,7 +123,7 @@ def customer(self):
         labels.append(Label2)
     
     def addtoorder():
-        item=itementry.get().strip()
+        item=itementry.get()
         qty=qtyvar.get()
         if item in obj.food_menu and item != "Item":
             qty=int(qty)
@@ -188,7 +187,7 @@ def admin(self):
         self.change.title("Edit Menu")
         self.change.geometry("1280x720")
         self.change.config(bg="#282828")
-        self.gobackbutton=tkinter.Button(self.change,text="Go Back",font=("Arial Black", 40),fg="#941b1b", bg="#282828", command=goback3)
+        self.gobackbutton=tkinter.Button(self.change,text="Go Back",font=("Arial Black", 20),fg="#941b1b", bg="#282828", command=goback3)
         self.gobackbutton.pack(side="top", anchor="nw", padx=25,pady=25)
         canvas=tkinter.Canvas(self.change)
         scrollbar=tkinter.Scrollbar(self.change,orient="vertical",command=canvas.yview)
