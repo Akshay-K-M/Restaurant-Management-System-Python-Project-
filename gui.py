@@ -313,7 +313,7 @@ def admin(self):
                     else:
                         messagebox.showwarning("Not Found", f"{item_name} was not found in the menu.")   
             except FileNotFoundError:
-                print("Error: 'Order.csv' file not found. Starting with order ID 1.")
+                print("Error: 'Order.csv' file not found.")
             except Exception as e:
                  print(f"Error reading 'Order.csv': {e}")         
      
@@ -344,7 +344,7 @@ def admin(self):
                 orderdropdown.pack()
                 labels2.append(orderdropdown)
         except FileNotFoundError:
-            print("Error: 'Order.csv' file not found. Starting with order ID 1.")
+            print("Error: 'Order.csv' file not found.")
         except Exception as e:
             print(f"Error reading 'Order.csv': {e}")
     dropdowndisplay()
@@ -373,7 +373,7 @@ def admin(self):
                 orderno.set("Choose Order No")
                 messagebox.showinfo("Success!","Order has been marked as complete!")
             except FileNotFoundError:
-                print("Error: 'Order.csv' file not found. Starting with order ID 1.")
+                print("Error: 'Order.csv' file not found.")
             except Exception as e:
                 print(f"Error reading 'Order.csv': {e}")
 
@@ -411,7 +411,7 @@ def admin(self):
                     deletebutton.pack()
                     labels2.append(deletebutton)
         except FileNotFoundError:
-            print("Error: 'Order.csv' file not found. Starting with order ID 1.")
+            print("Error: 'Order.csv' file not found.")
         except Exception as e:
             print(f"Error reading 'Order.csv': {e}")                    
     orderno.trace("w", on_orderno_change)

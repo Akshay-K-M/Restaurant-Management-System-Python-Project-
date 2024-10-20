@@ -14,7 +14,7 @@ class Display_Menu:
                     if len(i)==3: # to  find orderid of most recent order and add 1 to it for new orderid
                         self.orderid=int((i[0].split())[-1])+1    
         except FileNotFoundError:
-            print("Error: 'Order.csv' file not found. Starting with order ID 1.")
+            print("Error: 'Order.csv' file not found.")
         except Exception as e:
             print(f"Error reading 'Order.csv': {e}")           
         
